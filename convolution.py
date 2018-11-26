@@ -57,3 +57,43 @@ def convolution_separable(data, kernel):
         outB[i] = out_sum
 
     return outB
+
+def convolution_np(data, kernel, einstein=False):
+    U,S,V = np.linalg.svd(kernel)
+    s = S[0] # scaling factor
+    v = U[:,0]
+    h = V.T[:,0]
+
+    nK = kernel.shape[1] # assume square matrix
+    offset = int((nK-1)/2)
+    nData = data.shape[0]
+
+    outA = np.zeros(nData)
+    outB = np.zeros(nData)
+
+    def einFun():
+        for i in range(offset,nData-offset):
+            row_offset = i - offset
+            outA[i] += np.einsum('i,i->', data[row_offset:row_offset+nK], v) #(data[row_offset:row_offset+nK]* v).sum()
+
+        for i in range(offset,nData-offset):
+            row_offset = i - offset
+            outB[i] += np.einsum('i,i->', outA[row_offset:row_offset+nK], h)
+    
+    def viewFun():
+        def rolling_view(a):
+            shape = (a.shape[-1] - nK + 1, nK)
+            strides = a.strides + (a.strides[-1],)
+            return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
+        
+        view = rolling_view(data)
+        outA[offset:-offset] += view @ v
+
+        view = rolling_view(outA)
+        outB[offset:-offset] = view @ h  
+
+    if einstein:
+        einFun()
+    else:
+        viewFun()
+    return outB
