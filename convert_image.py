@@ -6,13 +6,15 @@ from io import StringIO
 from textwrap import dedent
 
 import argparse
+import detect_edges
 
 
 def preprocess_image(image_file):
     # read image
     img = cv.imread("sudoku.png", cv.IMREAD_GRAYSCALE)
     # edge detection
-    edges = cv.Canny(img, 50, 200, None, 3)
+    #edges = cv.Canny(img, 50, 200, None, 3)
+    edges = detect_edges.detect_edges_sobel(img)
 
     return edges
     
