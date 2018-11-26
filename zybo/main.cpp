@@ -34,10 +34,9 @@ static void Export_CSV(Image data)
         return;
     }
 
-    for (int i = 0; i < ELEMENTS-1; ++i)
-        f << data.vect[i] << ",";
+    for (int i = 0; i < ELEMENTS; i++)
+        f << (int) data.vect[i] << std::endl;
 
-    f << data.vect[ELEMENTS-1] << std::endl;
 }
 
 int main(int, char**) 
