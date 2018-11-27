@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def convolution(img, kernel):
     nCols = img.shape[1]
     nRows = img.shape[0]
@@ -23,6 +22,42 @@ def convolution(img, kernel):
                     col_offset = col - offset + k_col
                     s = s + (img[row_offset, col_offset]) * kernel[k_row,k_col]
             out[row,col] = s
+    return out
+
+def convolution_np(img, kernel, einstein=False):
+    nCols = img.shape[1]
+    nRows = img.shape[0]
+    nK = kernel.shape[1] # assume square matrix
+    
+    offset = int((nK-1)/2)
+    row_start = offset
+    row_end = nRows - offset
+    col_start = offset
+    col_end = nCols - offset
+    
+    out = np.zeros_like(img) 
+    
+    def einFun():
+        for col in range(col_start,col_end):
+            for row in range(row_start,row_end):
+                row_offset = row - offset
+                col_offset = col - offset
+                # np.sum(img[row_offset:row_offset+nK, col_offset:col_offset+nK] * kernel)
+                out[row,col] = np.einsum('ij,ij->', img[row_offset:row_offset+nK, col_offset:col_offset+nK], kernel)
+                
+    def viewFun():
+        def window_view(a):
+            shape = (a.shape[0] - 2*offset, a.shape[1] - 2*offset)  + (nK, nK)
+            strides = a.strides + a.strides
+            return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
+        
+        view = window_view(img)
+        out[offset:-offset, offset:-offset] += np.einsum('hwij,ij->hw', view, kernel) 
+
+    if einstein:
+        einFun()
+    else:
+        viewFun()
     return out
 
 
@@ -58,7 +93,7 @@ def convolution_separable(data, kernel):
 
     return outB
 
-def convolution_np(data, kernel, einstein=False):
+def convolution_separable_np(data, kernel, einstein=False):
     U,S,V = np.linalg.svd(kernel)
     s = S[0] # scaling factor
     v = U[:,0]
