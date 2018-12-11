@@ -1,57 +1,42 @@
-#include "image_union.h"
 #include <iostream>
-//#include "exporter.h"
 #include <fstream>
 #include <string>
-
-#define KERNELSIZE 3
-
-void convolute(Image in, Image out, double* kernel)
-{
-	for (int i = 0; i < ELEMENTS; ++i)
-	{
-		int sum = 0;
-		for (int j = 0; j < KERNELSIZE; ++j)
-		{
-			int kOffset = i - ((KERNELSIZE - 1) / 2) + j;
-
-			if (kOffset >= 0 || kOffset > ELEMENTS)
-				sum += in.vect[kOffset] * kernel[j];
-		}
-		out.vect[i] = sum;
-	}		
-}
+#include <cassert>
+#include "exporter.h"
+#include "imageProcessingAlgorithms.h"
+//#include "image_union.h"
+#include "math.h"
 
 
-static void Export_CSV(Image data)
-{
-    std::ofstream f;
-    f.open("image_processed.csv", std::ios::out | std::ios::trunc);
-    
-    if(!f.is_open())
-    {
-        std::cout << "Failed exporting file, could not open file" << std::endl;
-        return;
-    }
-
-    for (int i = 0; i < ELEMENTS; i++)
-        f << (int) data.vect[i] << std::endl;
-
-}
 
 int main(int, char**) 
 {
-	Image out = {};
+	Image img_sobel_h = {0};
+	Image img_sobel_v = {0};
+	Image out = {0};
+	Image img_sobel = {0};
 	
+	// These values are found from performing an SVD on the sobel kernel in python
 	double k1[] = { -0.70710678 , 0  , 0.70710678 };
 	double k2[] = { -0.40824829, -0.81649658  , -0.40824829 };
+	
+	float sobel_horizontal[3][3] = { {1, 2, 1}, {0, 0, 0}, {-1, -2, -1} };
+	float sobel_vertical[3][3] = { {1,0,-1}, {2,0,-2}, {1,0,-1}};
+	float laplacian[KERNELSIZE][KERNELSIZE] = { {1,1,1}, {1,-8,1}, {1,1,1}};
+	float sobel[KERNELSIZE][KERNELSIZE] = { {2,2,0}, {2,0,-2}, {0,-2,-2} };
 
-	convolute(img, out, k1);
-	convolute(out, img, k2); // use input buffer as output
+	float val = static_cast<float>(static_cast<float>(1)/9);
+	float averageFilter[KERNELSIZE][KERNELSIZE] = {{val, val, val}, {val, val, val}, {val, val, val}};
+	
+	ImageProcessingAlgorithms::convolve2Dimg2Dkernel(img, out,  averageFilter);
 
+	//convolute(out, img_sobel_h, laplacian);
+	//ImageProcessingAlgorithms::convolve2Dimg2Dkernel(out, img_sobel_h, sobel_horizontal);
+	//ImageProcessingAlgorithms::convolve2Dimg2Dkernel(out, img_sobel_v, sobel_vertical);
+	ImageProcessingAlgorithms::convolve2Dimg2Dkernel(out, img_sobel, sobel);
 
-	std::cout << "hello world" << std::endl;
-  	Export_CSV(img);
+  	Export_CSV(img_sobel, "./../image_processed.csv");
+	std::cout << "Finished exporting img" << std::endl;
 
   return 0;
 }
