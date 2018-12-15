@@ -1,7 +1,5 @@
 #pragma once
 #include <cmath>
-#include <iostream> 
-#include <algorithm>
 #include "types.h"
 #include "ImageMaths.h"
 #include <assert.h>
@@ -66,9 +64,9 @@ public:
 		}
 
 		// Putting the lines on a picture. This is an empty matrix with just the lines.
-		for (int k = 0; k < nonZeroCount; k++)
+		for (T_size k = 0; k < nonZeroCount; k++)
 		{
-			for (int c = 0; c < i_cols; c++)
+			for (T_size c = 0; c < i_cols; c++)
 			{
 				outRow = (T_size)round(-tan(M_PI*fiNonZero[k] / a_cols)*c + (dNonZero[k] - edgeImgDiagonal) / cos(M_PI*fiNonZero[k] / a_cols));
 				if (outRow > 1 && outRow < i_rows)
