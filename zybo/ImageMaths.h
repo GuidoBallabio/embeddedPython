@@ -21,6 +21,21 @@ public:
 	}
 
 	template<typename T_img, size_t i_rows, size_t i_cols>
+	static T_img mean(T_img in[i_rows][i_cols])
+	{
+		long meanVal = 0;
+		for (int c = 0; c < i_cols; c++)
+		{
+			for (int r = 0; r < i_rows; r++)
+			{
+				meanVal += in[r][c];
+			}
+		}
+		meanVal = meanVal / (i_rows * i_cols);
+		return meanVal;
+	}
+
+	template<typename T_img, size_t i_rows, size_t i_cols>
 	static T_img findMax(T_img in[i_rows][i_cols])
 	{
 		T_img accMax = 0;

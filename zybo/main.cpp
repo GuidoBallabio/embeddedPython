@@ -53,7 +53,8 @@ int main(int, char**)
 	loader.ExportData(edge.vect, s);
 
 	loader.SetOutputFile("out_file_threshold");
-	ImageMaths::threshold<T_data, img_rows, img_cols>(edge.mat, thresholded.mat, 120);
+	T_data meanVal = ImageMaths::mean<T_data, img_rows, img_cols>(in.mat);
+	ImageMaths::threshold<T_data, img_rows, img_cols>(edge.mat, thresholded.mat, meanVal);
 	loader.ExportData(thresholded.vect, s);
 
 	loader.SetOutputFile("out_file_hough_lines");
