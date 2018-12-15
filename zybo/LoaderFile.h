@@ -35,6 +35,11 @@ public:
 		fs.write(reinterpret_cast<char*>(buffer), size*sizeof(T));
 	}
 
+	void SetOutputFile(std::string outputName)
+	{
+		_outputName = outputName;
+	}
+
 private:
 	std::string _inputName;
 	std::string _outputName;

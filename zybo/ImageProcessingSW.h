@@ -14,9 +14,6 @@ public:
 		assert(k_rows % 2 != 0);
 		assert(k_cols % 2 != 0);
 
-
-		//Image<T, 3, 3> test = reinterpret_cast<T, 3, 3>(kernel);
-
 		typedef unsigned int TOffset;
 
 		// At the boundary of the matrix, convolution is not possible.
@@ -39,7 +36,6 @@ public:
 						unsigned int col_offset = c - cs + kc;
 						sum += in[row_offset][col_offset] * kernel[kr][kc];
 					}
-
 				out[r][c] = sum;
 			}
 	};
