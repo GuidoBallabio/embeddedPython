@@ -38,28 +38,28 @@ public:
 	template<typename T_img, size_t i_rows, size_t i_cols>
 	static T_img findMax(T_img in[i_rows][i_cols])
 	{
-		T_img accMax = 0;
+		T_img maxVal = 0;
 		for (T_size c = 0; c < i_cols; c++)
 		{
 			for (T_size r = 0; r < i_rows; r++)
 			{
-				if (in[r][c] > accMax)
+				if (in[r][c] > maxVal)
 				{
-					accMax = in[r][c];
+					maxVal = in[r][c];
 				}
 			}
 		}
-		return accMax;
+		return maxVal;
 	}
 
 	template<typename T_img, size_t i_rows, size_t i_cols>
-	static void scaleImage(T_img in[i_rows][i_cols], T_img out[i_rows][i_cols], T_img accMax)
+	static void scaleImage(T_img in[i_rows][i_cols], T_img out[i_rows][i_cols], T_img scaleValue)
 	{
 		for (T_size c = 0; c < i_cols; c++)
 		{
 			for (T_size r = 0; r < i_rows; r++)
 			{
-				out[r][c] = in[r][c] / accMax;
+				out[r][c] = in[r][c] / scaleValue;
 			}
 		}
 	}
