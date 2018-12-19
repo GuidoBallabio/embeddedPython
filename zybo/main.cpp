@@ -6,11 +6,12 @@
 #include "HoughTransformSW.h"
 
 
-constexpr size_t img_rows = 50;
-constexpr size_t img_cols = 50;
+constexpr size_t img_rows = 256;
+constexpr size_t img_cols = 256;
 constexpr size_t acc_rows = (img_rows + img_cols) * 2;
 constexpr size_t acc_cols = 180;
 constexpr size_t kernel_size = 3;
+
 
 //constexpr float f = (1 / float(9));
 constexpr int8_t f = 9;
@@ -58,7 +59,7 @@ int main(int, char**)
 	loader.ExportData(thresholded.vect, s);
 
 	loader.SetOutputFile("out_file_hough_lines");
-	hough.houghTransform<T_data, T_accumulator, img_rows, img_cols, acc_rows, acc_cols>(thresholded.mat, hough_lines.mat, accumulator.mat, dNonZero, fiNonZero, 0.40f);
+	hough.houghTransform<T_data, T_accumulator, img_rows, img_cols, acc_rows, acc_cols>(thresholded.mat, hough_lines.mat, accumulator.mat, dNonZero, fiNonZero, 0.55f);
 	loader.ExportData(hough_lines.vect, s);
 
 	loader.SetOutputFile("out_file_hough_img");
