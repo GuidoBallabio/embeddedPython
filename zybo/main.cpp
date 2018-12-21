@@ -6,8 +6,8 @@
 #include "HoughTransformSW.h"
 
 
-constexpr size_t img_rows = 256;
-constexpr size_t img_cols = 256;
+constexpr size_t img_rows = 50;
+constexpr size_t img_cols = 50;
 constexpr size_t acc_rows = (img_rows + img_cols) * 2;
 constexpr size_t acc_cols = 180;
 constexpr size_t kernel_size = 3;
@@ -46,7 +46,7 @@ int main(int, char**)
 	HoughTransformSW hough;
 
 	processor.convolve<T_data, T_kernel, img_rows, img_cols, kernel_size, kernel_size>(in.mat, blur.mat, blur_kernel.mat);
-	ImageMaths::scaleImage<T_data, img_rows, img_cols>(blur.mat, blur.mat, 9);
+	ImageMaths::scaleImage<T_data, img_rows, img_cols>(blur.mat, blur.mat, f);
 	loader.ExportData(blur.vect, s);
 
 	loader.SetOutputFile("out_file_blur_edge");
@@ -59,7 +59,7 @@ int main(int, char**)
 	loader.ExportData(thresholded.vect, s);
 
 	loader.SetOutputFile("out_file_hough_lines");
-	hough.houghTransform<T_data, T_accumulator, img_rows, img_cols, acc_rows, acc_cols>(thresholded.mat, hough_lines.mat, accumulator.mat, dNonZero, fiNonZero, 0.55f);
+	hough.houghTransform<T_data, T_accumulator, img_rows, img_cols, acc_rows, acc_cols>(thresholded.mat, hough_lines.mat, accumulator.mat, dNonZero, fiNonZero, 0.65f);
 	loader.ExportData(hough_lines.vect, s);
 
 	loader.SetOutputFile("out_file_hough_img");
