@@ -63,7 +63,7 @@ int main(int, char**)
 	loader.ExportData(hough_lines.vect, s);
 
 	loader.SetOutputFile("out_file_hough_img");
-	ImageMaths::threshold<T_data, img_rows, img_cols>(in.mat, out.mat, meanVal);
+	ImageMaths::threshold<T_data, img_rows, img_cols>(in.mat, out.mat, 50);
 	ImageMaths::addImages<T_data, img_rows, img_cols>(hough_lines.mat, out.mat, out.mat);
 	loader.ExportData(out.vect, s);
 
